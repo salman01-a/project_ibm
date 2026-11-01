@@ -1,0 +1,710 @@
+/* ============================================================
+   Smart Bill & Tip Splitter — style.css
+   Desain: Soft Glassmorphism dengan sentuhan Neumorphism
+   Pendekatan: Mobile-first, CSS Custom Properties, Flexbox/Grid
+   ============================================================ */
+
+/* ── 1. CSS Custom Properties (Design Tokens) ──────────────── */
+:root {
+  /* Warna utama */
+  --clr-bg-start:        #0f0c29;
+  --clr-bg-mid:          #302b63;
+  --clr-bg-end:          #24243e;
+
+  /* Glassmorphism surface */
+  --clr-glass:           rgba(255, 255, 255, 0.08);
+  --clr-glass-hover:     rgba(255, 255, 255, 0.13);
+  --clr-glass-border:    rgba(255, 255, 255, 0.18);
+
+  /* Teks */
+  --clr-text-primary:    #f0f4ff;       /* Rasio kontras > 7:1 terhadap bg */
+  --clr-text-secondary:  #b8c6e8;       /* Rasio kontras > 4.5:1 */
+  --clr-text-muted:      #8899bb;       /* Hanya untuk teks dekoratif kecil */
+
+  /* Aksen */
+  --clr-accent:          #7c5cd8;
+  --clr-accent-light:    #a385f0;
+  --clr-accent-glow:     rgba(124, 92, 216, 0.45);
+  --clr-success:         #34d399;
+  --clr-success-glow:    rgba(52, 211, 153, 0.35);
+  --clr-gold:            #fbbf24;
+  --clr-gold-glow:       rgba(251, 191, 36, 0.35);
+
+  /* Error */
+  --clr-error:           #f87171;
+
+  /* Neumorphism shadows (untuk input/btn) */
+  --neu-shadow-out:
+    4px 4px 10px rgba(0, 0, 0, 0.5),
+    -2px -2px 6px rgba(255, 255, 255, 0.05);
+  --neu-shadow-in:
+    inset 3px 3px 8px rgba(0, 0, 0, 0.55),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.04);
+
+  /* Layout */
+  --radius-sm:   8px;
+  --radius-md:   14px;
+  --radius-lg:   22px;
+  --radius-full: 9999px;
+
+  /* Tipografi */
+  --font-base: -apple-system, "Segoe UI", system-ui, sans-serif;
+  --fz-xs:    0.75rem;
+  --fz-sm:    0.875rem;
+  --fz-md:    1rem;
+  --fz-lg:    1.25rem;
+  --fz-xl:    1.5rem;
+  --fz-2xl:   2rem;
+
+  /* Transisi */
+  --trans-fast:   0.15s ease;
+  --trans-normal: 0.28s ease;
+  --trans-slow:   0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── 2. Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Mencegah zoom pada input di iOS */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-base);
+  font-size: var(--fz-md);
+  line-height: 1.6;
+  color: var(--clr-text-primary);
+  background: linear-gradient(
+    135deg,
+    var(--clr-bg-start) 0%,
+    var(--clr-bg-mid)   50%,
+    var(--clr-bg-end)   100%
+  );
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.5rem 1rem 3rem;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── 3. Dekorasi Latar (Background Blobs) ────────────────────── */
+.bg-blob {
+  position: fixed;
+  border-radius: var(--radius-full);
+  filter: blur(80px);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+  animation: blobFloat 10s ease-in-out infinite alternate;
+}
+
+.bg-blob--1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, #7c5cd8, transparent 70%);
+  top: -120px;
+  right: -100px;
+  animation-delay: 0s;
+}
+
+.bg-blob--2 {
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, #2563eb, transparent 70%);
+  bottom: -80px;
+  left: -80px;
+  animation-delay: -5s;
+}
+
+@keyframes blobFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(20px, 30px) scale(1.05); }
+}
+
+/* ── 4. Layout Utama (App Container) ────────────────────────── */
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── 5. Header ───────────────────────────────────────────────── */
+.app__header {
+  text-align: center;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.app__logo {
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  filter: drop-shadow(0 0 14px var(--clr-accent-glow));
+}
+
+.app__title {
+  font-size: var(--fz-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(120deg, var(--clr-accent-light), var(--clr-success));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app__subtitle {
+  font-size: var(--fz-sm);
+  color: var(--clr-text-secondary);
+  margin-top: 0.15rem;
+}
+
+/* ── 6. Kartu Glassmorphism ──────────────────────────────────── */
+.card {
+  background: var(--clr-glass);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.25rem;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── 7. Field Group ──────────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: none; /* reset fieldset */
+  padding: 0;
+}
+
+.field__label {
+  font-size: var(--fz-sm);
+  font-weight: 600;
+  color: var(--clr-text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.field__hint {
+  font-size: var(--fz-xs);
+  color: var(--clr-text-muted);
+}
+
+.field__hint--error {
+  color: var(--clr-error);
+  font-weight: 500;
+  min-height: 1rem; /* Hindari layout shift saat error muncul/hilang */
+}
+
+/* ── 8. Select (Dropdown Mata Uang) ──────────────────────────── */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-md);
+  color: var(--clr-text-primary);
+  font-family: var(--font-base);
+  font-size: var(--fz-md);
+  padding: 0.65rem 2.5rem 0.65rem 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--trans-fast), background var(--trans-fast);
+  box-shadow: var(--neu-shadow-out);
+}
+
+.select:focus {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+  background: var(--clr-glass-hover);
+}
+
+/* Warna option di dark background */
+.select option {
+  background: #302b63;
+  color: var(--clr-text-primary);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 0.85rem;
+  color: var(--clr-text-secondary);
+  font-size: var(--fz-md);
+  pointer-events: none;
+  transition: transform var(--trans-fast);
+}
+
+.select-wrapper:focus-within .select-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── 9. Input Tagihan ────────────────────────────────────────── */
+.input-prefix-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--neu-shadow-out);
+  transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
+}
+
+.input-prefix-wrapper:focus-within {
+  border-color: var(--clr-accent);
+  box-shadow: 0 0 0 3px var(--clr-accent-glow), var(--neu-shadow-in);
+}
+
+.input-prefix {
+  padding: 0 0.75rem;
+  color: var(--clr-accent-light);
+  font-weight: 600;
+  font-size: var(--fz-sm);
+  white-space: nowrap;
+  border-right: 1px solid var(--clr-glass-border);
+  user-select: none;
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--clr-text-primary);
+  font-family: var(--font-base);
+  font-size: var(--fz-lg);
+  font-weight: 600;
+  padding: 0.65rem 0.9rem;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--clr-text-muted);
+  font-weight: 400;
+}
+
+/* Hilangkan spinner bawaan browser pada input number */
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input[type=number] { -moz-appearance: textfield; }
+
+/* ── 10. Tombol Tip Cepat ────────────────────────────────────── */
+.tip-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+}
+
+.tip-btn {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-md);
+  color: var(--clr-text-secondary);
+  font-family: var(--font-base);
+  font-size: var(--fz-sm);
+  font-weight: 600;
+  padding: 0.55rem 0;
+  cursor: pointer;
+  transition:
+    background var(--trans-normal),
+    color var(--trans-normal),
+    border-color var(--trans-normal),
+    transform var(--trans-slow),
+    box-shadow var(--trans-normal);
+  box-shadow: var(--neu-shadow-out);
+}
+
+.tip-btn:hover {
+  background: var(--clr-glass-hover);
+  color: var(--clr-text-primary);
+  transform: translateY(-2px);
+}
+
+.tip-btn:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+/* Status aktif tombol tip */
+.tip-btn[aria-pressed="true"] {
+  background: linear-gradient(135deg, var(--clr-accent), #5a3fbf);
+  border-color: var(--clr-accent);
+  color: #fff;
+  box-shadow:
+    0 0 0 3px var(--clr-accent-glow),
+    var(--neu-shadow-in);
+  transform: translateY(0);
+}
+
+/* ── 11. Slider Kustom ───────────────────────────────────────── */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.slider-label {
+  font-size: var(--fz-xs);
+  color: var(--clr-text-secondary);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: var(--radius-full);
+  /* Track warna fallback; diperbarui dinamis via JS */
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Thumb — Webkit */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--clr-accent-light), var(--clr-accent));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px var(--clr-accent-glow);
+  cursor: pointer;
+  transition: transform var(--trans-slow), box-shadow var(--trans-fast);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 14px var(--clr-accent-glow);
+}
+
+/* Thumb — Firefox */
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--clr-accent-light), var(--clr-accent));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 8px var(--clr-accent-glow);
+  cursor: pointer;
+}
+
+.slider:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 3px;
+}
+
+.slider-output {
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  color: var(--clr-accent-light);
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* ── 12. Stepper (Jumlah Orang) ──────────────────────────────── */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stepper__btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--clr-glass-border);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--clr-text-primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background var(--trans-normal),
+    transform var(--trans-slow),
+    box-shadow var(--trans-normal);
+  box-shadow: var(--neu-shadow-out);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.stepper__btn:hover {
+  background: var(--clr-glass-hover);
+  transform: scale(1.08);
+}
+
+.stepper__btn:active {
+  transform: scale(0.95);
+  box-shadow: var(--neu-shadow-in);
+}
+
+.stepper__btn:focus-visible {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+.stepper__btn--minus {
+  color: var(--clr-error);
+}
+
+.stepper__btn--plus {
+  color: var(--clr-success);
+}
+
+.stepper__input {
+  width: 64px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-md);
+  color: var(--clr-text-primary);
+  font-family: var(--font-base);
+  font-size: var(--fz-lg);
+  font-weight: 700;
+  padding: 0.4rem;
+  box-shadow: var(--neu-shadow-in);
+}
+
+.stepper__input:focus {
+  outline: 2px solid var(--clr-accent);
+  outline-offset: 2px;
+}
+
+/* Hilangkan spinner pada stepper input */
+.stepper__input::-webkit-outer-spin-button,
+.stepper__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.stepper__input[type=number] { -moz-appearance: textfield; }
+
+/* ── 13. Summary Cards ───────────────────────────────────────── */
+.summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.summary__card {
+  background: var(--clr-glass);
+  border: 1px solid var(--clr-glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 0.9rem;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: transform var(--trans-normal), box-shadow var(--trans-normal);
+}
+
+.summary__card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Kartu "Total / Orang" dengan aksen ungu */
+.summary__card--accent {
+  border-color: rgba(124, 92, 216, 0.4);
+  background: rgba(124, 92, 216, 0.1);
+}
+
+/* Kartu "Grand Total" — mengisi dua kolom penuh */
+.summary__card--grand {
+  grid-column: 1 / -1;
+  border-color: rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.07);
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary__label {
+  font-size: var(--fz-xs);
+  color: var(--clr-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary__value {
+  font-size: var(--fz-lg);
+  font-weight: 700;
+  color: var(--clr-text-primary);
+  letter-spacing: -0.02em;
+  transition: all var(--trans-normal);
+  /* Animasi pop saat nilai berubah (dikontrol via class .updated) */
+}
+
+.summary__card--accent .summary__value {
+  color: var(--clr-accent-light);
+}
+
+.summary__card--grand .summary__value {
+  font-size: var(--fz-xl);
+  color: var(--clr-gold);
+  text-shadow: 0 0 12px var(--clr-gold-glow);
+}
+
+/* Animasi nilai berubah */
+@keyframes valuePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+.summary__value.updated {
+  animation: valuePop 0.35s var(--trans-slow);
+}
+
+/* ── 14. Tombol Reset ────────────────────────────────────────── */
+.actions {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: var(--radius-full);
+  color: var(--clr-error);
+  font-family: var(--font-base);
+  font-size: var(--fz-md);
+  font-weight: 600;
+  padding: 0.65rem 2rem;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition:
+    background var(--trans-normal),
+    transform var(--trans-slow),
+    box-shadow var(--trans-normal);
+  box-shadow: 0 4px 16px rgba(248, 113, 113, 0.15);
+}
+
+.btn-reset:hover {
+  background: rgba(248, 113, 113, 0.22);
+  box-shadow: 0 0 20px rgba(248, 113, 113, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-reset:active {
+  transform: scale(0.97) translateY(0);
+}
+
+.btn-reset:focus-visible {
+  outline: 2px solid var(--clr-error);
+  outline-offset: 3px;
+}
+
+/* Animasi ikon reset berputar */
+.btn-reset__icon {
+  font-size: 1.1rem;
+  display: inline-block;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-reset:active .btn-reset__icon,
+.btn-reset.spinning .btn-reset__icon {
+  transform: rotate(-360deg);
+}
+
+/* ── 15. Animasi Reset Form ──────────────────────────────────── */
+@keyframes formShake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-5px); }
+  80%       { transform: translateX(5px); }
+}
+
+.card.shake {
+  animation: formShake 0.45s ease;
+}
+
+/* ── 16. Footer ──────────────────────────────────────────────── */
+.app__footer {
+  text-align: center;
+  font-size: var(--fz-xs);
+  color: var(--clr-text-muted);
+  padding-top: 0.5rem;
+}
+
+/* ── 17. Responsif — Tablet/Desktop ──────────────────────────── */
+@media (min-width: 520px) {
+  body {
+    padding: 2.5rem 1.5rem 4rem;
+    align-items: center;
+  }
+
+  .app {
+    gap: 1.5rem;
+  }
+
+  .card {
+    padding: 2rem 1.75rem;
+  }
+
+  .app__title {
+    font-size: var(--fz-2xl);
+  }
+
+  .summary__value {
+    font-size: var(--fz-xl);
+  }
+
+  .summary__card--grand .summary__value {
+    font-size: var(--fz-2xl);
+  }
+}
+
+/* ── 18. Preferensi Reduced Motion ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .bg-blob {
+    animation: none;
+  }
+}

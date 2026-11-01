@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Smart Bill & Tip Splitter — Kalkulator pembagi tagihan dan tip yang cerdas." />
+    <title>Smart Bill & Tip Splitter</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ===== Background decorative blobs ===== -->
+    <div class="bg-blob bg-blob--1" aria-hidden="true"></div>
+    <div class="bg-blob bg-blob--2" aria-hidden="true"></div>
+
+    <main class="app" role="main">
+      <!-- ===== App Header ===== -->
+      <header class="app__header">
+        <div class="app__logo" aria-hidden="true">💳</div>
+        <h1 class="app__title">Smart Bill Splitter</h1>
+        <p class="app__subtitle">Bagi tagihan &amp; tip dengan mudah</p>
+      </header>
+
+      <!-- ===== Form Section ===== -->
+      <section class="card" aria-label="Form input tagihan">
+
+        <!-- Currency selector -->
+        <div class="field">
+          <label class="field__label" for="currency">Mata Uang</label>
+          <div class="select-wrapper">
+            <select id="currency" class="select" aria-label="Pilih mata uang">
+              <option value="IDR">🇮🇩 IDR — Rupiah</option>
+              <option value="USD">🇺🇸 USD — Dollar</option>
+              <option value="EUR">🇪🇺 EUR — Euro</option>
+            </select>
+            <span class="select-arrow" aria-hidden="true">▾</span>
+          </div>
+        </div>
+
+        <!-- Bill amount -->
+        <div class="field">
+          <label class="field__label" for="bill-amount">Total Tagihan</label>
+          <div class="input-prefix-wrapper">
+            <span class="input-prefix" id="currency-symbol" aria-hidden="true">Rp</span>
+            <input
+              id="bill-amount"
+              class="input"
+              type="number"
+              inputmode="decimal"
+              min="0"
+              step="any"
+              placeholder="0"
+              aria-label="Masukkan total tagihan"
+              aria-describedby="bill-amount-hint"
+            />
+          </div>
+          <span class="field__hint" id="bill-amount-hint">Masukkan jumlah tagihan sebelum tip</span>
+        </div>
+
+        <!-- Tip quick-select -->
+        <fieldset class="field">
+          <legend class="field__label">Persentase Tip</legend>
+          <div class="tip-grid" role="group" aria-label="Pilihan tip cepat">
+            <button type="button" class="tip-btn" data-tip="5"  aria-pressed="false">5%</button>
+            <button type="button" class="tip-btn" data-tip="10" aria-pressed="false">10%</button>
+            <button type="button" class="tip-btn" data-tip="15" aria-pressed="false">15%</button>
+            <button type="button" class="tip-btn" data-tip="20" aria-pressed="false">20%</button>
+          </div>
+
+          <!-- Custom tip slider -->
+          <div class="slider-row">
+            <label class="slider-label" for="tip-slider">Kustom:</label>
+            <input
+              id="tip-slider"
+              class="slider"
+              type="range"
+              min="0"
+              max="50"
+              value="0"
+              step="1"
+              aria-label="Atur persentase tip kustom"
+              aria-valuemin="0"
+              aria-valuemax="50"
+              aria-valuenow="0"
+              aria-valuetext="0%"
+            />
+            <output class="slider-output" id="tip-slider-output" for="tip-slider">0%</output>
+          </div>
+        </fieldset>
+
+        <!-- People count -->
+        <div class="field">
+          <label class="field__label" for="people-count">Jumlah Orang</label>
+          <div class="stepper" role="group" aria-label="Jumlah orang yang berbagi tagihan">
+            <button
+              type="button"
+              class="stepper__btn stepper__btn--minus"
+              id="btn-minus"
+              aria-label="Kurangi jumlah orang"
+              aria-controls="people-count"
+            >−</button>
+            <input
+              id="people-count"
+              class="stepper__input"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="99"
+              value="1"
+              aria-label="Jumlah orang"
+              aria-live="polite"
+            />
+            <button
+              type="button"
+              class="stepper__btn stepper__btn--plus"
+              id="btn-plus"
+              aria-label="Tambah jumlah orang"
+              aria-controls="people-count"
+            >+</button>
+          </div>
+          <span class="field__hint field__hint--error" id="people-error" role="alert" aria-live="assertive"></span>
+        </div>
+
+      </section>
+      <!-- /form section -->
+
+      <!-- ===== Summary Cards ===== -->
+      <section class="summary" aria-label="Ringkasan perhitungan" aria-live="polite" aria-atomic="true">
+        <div class="summary__card">
+          <span class="summary__label">Tip / Orang</span>
+          <span class="summary__value" id="tip-per-person">Rp 0</span>
+        </div>
+        <div class="summary__card summary__card--accent">
+          <span class="summary__label">Total / Orang</span>
+          <span class="summary__value" id="total-per-person">Rp 0</span>
+        </div>
+        <div class="summary__card summary__card--grand">
+          <span class="summary__label">Grand Total</span>
+          <span class="summary__value" id="grand-total">Rp 0</span>
+        </div>
+      </section>
+
+      <!-- ===== Reset Button ===== -->
+      <div class="actions">
+        <button type="button" class="btn-reset" id="btn-reset" aria-label="Reset semua input ke kondisi awal">
+          <span class="btn-reset__icon" aria-hidden="true">↺</span>
+          Reset
+        </button>
+      </div>
+
+      <!-- ===== Footer ===== -->
+      <footer class="app__footer">
+        <p>Smart Bill &amp; Tip Splitter &copy; 2026</p>
+      </footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
